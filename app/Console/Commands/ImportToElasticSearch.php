@@ -124,7 +124,7 @@ class ImportToElasticSearch extends Command
             $data['body'][] = [
                 'index' => [
                     '_index'    => Icon::ELASTIC_INDEX,
-                    '_type'     => Icon::ELASTIC_TYPE
+                    '_id'       => $icon->id,
                 ]
             ];
 
