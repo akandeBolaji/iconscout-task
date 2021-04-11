@@ -40,4 +40,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the icons for the user.
+     */
+    public function icons()
+    {
+        return $this->hasMany(Icon::class, 'contributor_id');
+    }
+
 }
