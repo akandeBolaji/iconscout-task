@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIconColorTable extends Migration
+class CreateColorIconTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateIconColorTable extends Migration
      */
     public function up()
     {
-        Schema::create('icon_color', function (Blueprint $table) {
+        Schema::create('color_icon', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('icon_id');
             $table->bigInteger('color_id');
@@ -28,6 +28,6 @@ class CreateIconColorTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('icon_color');
+        Schema::dropIfExists('color_icon');
     }
 }
