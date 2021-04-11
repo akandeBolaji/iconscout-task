@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Icon extends Model
 {
     use HasFactory;
-        /**
+
+    const ELASTIC_INDEX = 'icons';
+    const ELASTIC_TYPE  = 'icon';
+    /**
      * Table name associated with
      *
      * @var $table
