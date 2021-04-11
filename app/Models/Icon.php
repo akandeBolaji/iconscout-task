@@ -31,6 +31,7 @@ class Icon extends Model
         'name',
         'img_url',
         'price',
+        'style',
         'contributor_id'
     ];
 

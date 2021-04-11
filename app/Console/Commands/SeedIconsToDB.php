@@ -14,6 +14,8 @@ use App\Models\{
 
 class SeedIconsToDB extends Command
 {
+    const SEED_URL = 'https://s3.wasabisys.com/iconscout-dev/dist/icons.json';
+
     /**
      * The name and signature of the console command.
      *
@@ -26,7 +28,7 @@ class SeedIconsToDB extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Command to seed icons from url';
 
     /**
      * Create a new command instance.
@@ -45,7 +47,7 @@ class SeedIconsToDB extends Command
      */
     public function handle()
     {
-        $response = Http::get('https://s3.wasabisys.com/iconscout-dev/dist/icons.json');
+        $response = Http::get(self::SEED_URL);
         $data = $response->json();
         $count = count($data);
 

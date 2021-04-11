@@ -17,6 +17,7 @@ class CreateIconsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('img_url');
+            $table->string('style');
             $table->decimal('price', 10, 2);
             $table->bigInteger('contributor_id');
             $table->timestamps();
