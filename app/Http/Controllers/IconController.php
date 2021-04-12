@@ -18,13 +18,36 @@ use App\Events\{
 };
 use Illuminate\Support\Facades\DB;
 
-class MovieController extends Controller
+class IconController extends Controller
 {
     protected $client;
 
     public function __construct()
     {
         $this->client = ClientBuilder::create()->build();
+    }
+
+    public function search(Request $request)
+    {
+
+        // Search for given text and return data
+        $data = $this->search_icons($request->all());
+        $iconArrayIds = [];
+
+        // If there are any icons that match given search text "hits" fill their id's in array
+        if($data['hits']['total'] > 0) {
+
+            foreach ($data['hits']['hits'] as $hit) {
+                $iconArrayIds[] = $hit['_source']['id'];
+            }
+        }
+
+        // Retrieve found icons from database
+        $icons = Icon::with('tags', 'categories', 'colors')
+                        ->whereIn('id', $iconArrayIds)
+                        ->get();
+
+        \Log::debug($icons);
     }
 
     public function store(Request $request)
@@ -175,5 +198,42 @@ class MovieController extends Controller
             DB::rollBack();
             return response()->json(["message" => "error"], 500);
         }
+    }
+
+    private function search_icons($input)
+    {
+        $params = [
+            'index' => Icon::ELASTIC_INDEX,
+            'body' => [
+                'sort' => [
+                    '_score'
+                ],
+                'query' => [
+                    'bool' => [
+                        'should' => $this->generate_search_query($input)
+                    ],
+                ],
+            ]
+        ];
+
+        \Log::debug($params);
+
+        $data = $this->client->search($params);
+        return $data;
+    }
+
+    private function generate_search_query($input)
+    {
+        $query_array = [];
+
+        foreach ($input as $key => $value) {
+            $query_array[] = ['match' => [
+                "$key" => [
+                    'query'     => $value,
+                    // 'fuzziness' => '1'
+                ]
+            ]];
+        }
+        return $query_array;
     }
 }
