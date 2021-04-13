@@ -47,7 +47,7 @@ class IconController extends Controller
                         ->whereIn('id', $iconArrayIds)
                         ->get();
 
-        \Log::debug($icons);
+        \Log::debug($data);
     }
 
     public function store(Request $request)
@@ -210,7 +210,21 @@ class IconController extends Controller
                 ],
                 'query' => [
                     'bool' => [
-                        'should' => $this->generate_search_query($input)
+                        'must' => [
+                            ['match' => [
+                                "name" => [
+                                    'query'  => $input['query'],
+                                    // 'fuzziness' => '1'
+                                ]
+                            ]],
+                            ['match' => [
+                                "tags" => [
+                                    'query'  => $input['query'],
+                                    // 'fuzziness' => '1'
+                                ]
+                            ]]
+                        ],
+                        'filter' =>  $this->generate_search_filter($input),
                     ],
                 ],
             ]
@@ -222,17 +236,52 @@ class IconController extends Controller
         return $data;
     }
 
-    private function generate_search_query($input)
+    private function generate_search_filter($input)
     {
         $query_array = [];
 
         foreach ($input as $key => $value) {
-            $query_array[] = ['match' => [
-                "$key" => [
-                    'query'     => $value,
-                    // 'fuzziness' => '1'
-                ]
-            ]];
+            if ($key == 'query') {
+                continue;
+            }
+            switch ($key) {
+                case "price":
+                    if ($value == 'free') {
+                        $query_array[] = ['range' =>
+                            [
+                                'price' => [
+                                    'lte' => '0.00'
+                                ]
+                            ]
+                        ];
+                    }
+                    elseif ($value == 'premium') {
+                        $query_array[] = ['range' =>
+                            [
+                                'price' => [
+                                    'gt' => '0.00'
+                                ]
+                            ]
+                        ];
+                    }
+                    else {
+                        $value = number_format((float)$value, 2, '.', '');
+                        $query_array[] = ['term' => [
+                            "price" => $value
+                        ]];
+                    }
+                    break;
+                case "color":
+
+                    break;
+                default:
+                    $query_array[] = ['term' => [
+                        "$key" => $value
+                    ]];
+            }
+
+
+
         }
         return $query_array;
     }

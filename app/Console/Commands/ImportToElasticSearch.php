@@ -130,13 +130,20 @@ class ImportToElasticSearch extends Command
 
             // Icon data that will be required for later search
             $data['body'][] = [
+                'mappings' => [ 
+                    'properties' => [
+                        'colors' => [
+                            'type' => 'nested'
+                        ],
+                    ]
+                ],
                 'id'                => $icon->id,
                 'name'              => $icon->name,
                 'contributor'       => $icon->contributor->name,
                 'style'             => $icon->style,
                 'price'             => $icon->price,
                 'tags'              => implode(',', $icon->tags->pluck('value')->toArray()),
-                'colors'            => implode(',', $icon->colors->pluck('value')->toArray()),
+                'colors'            => $this->generate_nested_colors($icon->colors),
                 'categories'        => implode(',', $icon->categories->pluck('value')->toArray()),
             ];
 
@@ -155,5 +162,20 @@ class ImportToElasticSearch extends Command
         $end = microtime(true);
         echo "-- Uploaded in " . round($end - $start, 2) . " seconds" . PHP_EOL;
         return $i;
+    }
+
+    private function generate_nested_colors($colors)
+    {
+        $result = [];
+        $values = $colors->pluck('hsl_value')->toArray();
+        foreach ($values as $value) {
+            $value = explode(",", $value);
+            $result[] = [
+                "h" => $value[0],
+                "s" => $value[1],
+                "l" => $value[2]
+            ];
+        }
+        return $result;
     }
 }

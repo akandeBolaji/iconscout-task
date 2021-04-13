@@ -15,7 +15,10 @@ class Color extends Model
      * @var array
      */
     protected $fillable = [
-        'value'
+        'hex_value',
+        'hsl_value',
+        'dec_value',
+        'name'
     ];
 
     /**

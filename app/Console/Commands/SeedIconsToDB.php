@@ -11,6 +11,7 @@ use App\Models\{
     Color,
     Category
 };
+use App\Services\ColorConversionService;
 
 class SeedIconsToDB extends Command
 {
@@ -94,8 +95,12 @@ class SeedIconsToDB extends Command
                 return $color > 0;
             }));
             foreach ($colors as $c) {
-                $color = Color::where('value', $c)
-                        ->firstOrCreate(["value" => $c]);
+                $c =  substr($c, 1);
+                $color = Color::where('hex_value', $c)
+                        ->firstOrCreate(
+                            ['hex_value' => $c], 
+                            ['hsl_value' => implode(",", ColorConversionService::hexToHsl($c))]
+                        );
                 $icon->colors()->attach($color);
             }
             $i++;
