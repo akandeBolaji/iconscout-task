@@ -66,14 +66,30 @@ class ImportToElasticSearch extends Command
     public function resetIndex()
     {
         $params = [
-            'index' => Icon::ELASTIC_INDEX
+            'index' => Icon::ELASTIC_INDEX,
+            'body' => [
+                'settings' => [
+                    'number_of_shards' => 3,
+                    'number_of_replicas' => 2
+                ],
+                'mappings' => [
+                    '_source' => [
+                        'enabled' => true
+                    ],
+                    'properties' => [
+                        'colors' => [
+                            'type' => 'nested'
+                        ]
+                    ]
+                ]
+            ]
         ];
 
         // If index exists it will delete it (all data will be deleted) and create new one
-        if ($this->client->indices()->exists($params)) {
+        if ($this->client->indices()->exists(['index' => Icon::ELASTIC_INDEX])) {
 
             // Deleting index
-            $response_delete = $this->client->indices()->delete($params);
+            $response_delete = $this->client->indices()->delete(['index' => Icon::ELASTIC_INDEX]);
 
             if ($response_delete['acknowledged']) {
                 echo "Index '" . Icon::ELASTIC_INDEX . "' successfully deleted" . PHP_EOL;
@@ -130,13 +146,6 @@ class ImportToElasticSearch extends Command
 
             // Icon data that will be required for later search
             $data['body'][] = [
-                'mappings' => [ 
-                    'properties' => [
-                        'colors' => [
-                            'type' => 'nested'
-                        ],
-                    ]
-                ],
                 'id'                => $icon->id,
                 'name'              => $icon->name,
                 'contributor'       => $icon->contributor->name,

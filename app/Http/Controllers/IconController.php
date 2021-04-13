@@ -236,6 +236,51 @@ class IconController extends Controller
         return $data;
     }
 
+    private function generate_color_filter($color)
+    {
+        if (!$color) {
+            return;
+        }
+        $value = explode(",", $color);
+
+        return [
+            'path'  => "colors",
+            'query' => [
+                'bool' => [
+                    'filter' =>  [
+                        [
+                            'range' =>
+                            [
+                                'colors.h' => [
+                                    'gte' => ceil($value[0] - $value[0] * 0.1),
+                                    'lte' => ceil($value[0] + $value[0] * 0.1)
+                                ]
+                            ]
+                        ],
+                        [
+                            'range' =>
+                            [
+                                'colors.s' => [
+                                    'gte' => ceil($value[1] - $value[1] * 0.1),
+                                    'lte' => ceil($value[1] + $value[1] * 0.1)
+                                ]
+                            ]
+                        ],
+                        [
+                            'range' =>
+                            [
+                                'colors.l' => [
+                                    'gte' => ceil($value[2] - $value[2] * 0.1),
+                                    'lte' => ceil($value[2] + $value[2] * 0.1)
+                                ]
+                            ]
+                        ]
+                    ],
+                ],
+            ]
+        ];
+    }
+
     private function generate_search_filter($input)
     {
         $query_array = [];
@@ -272,7 +317,47 @@ class IconController extends Controller
                     }
                     break;
                 case "color":
-
+                    $value = explode(",", $value);
+                    $query_array[] = [
+                        'nested' => [
+                            'path' => 'colors',
+                            'query' => [
+                                'bool' => [
+                                    'must' =>  [
+                                        [
+                                            'range' =>
+                                            [
+                                                'colors.h' => [
+                                                    'gte' => ceil($value[0] - $value[0] * 0.1),
+                                                    'lte' => ceil($value[0] + $value[0] * 0.1)
+                                                ]
+                                            ]
+                                        ],
+                                        [
+                                            'range' =>
+                                            [
+                                                'colors.s' => [
+                                                    'gte' => ceil($value[1] - $value[1] * 0.1),
+                                                    'lte' => ceil($value[1] + $value[1] * 0.1)
+                                                ]
+                                            ]
+                                        ],
+                                        [
+                                            'range' =>
+                                            [
+                                                'colors.l' => [
+                                                    'gte' => ceil($value[2] - $value[2] * 0.1),
+                                                    'lte' => ceil($value[2] + $value[2] * 0.1)
+                                                ]
+                                            ]
+                                        ]
+                                    ],
+                                ],
+                            ],
+                            'ignore_unmapped' => true
+                        ],
+                        
+                    ];
                     break;
                 default:
                     $query_array[] = ['term' => [
