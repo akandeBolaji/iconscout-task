@@ -5,6 +5,7 @@ namespace App\Services;
 
 class ColorConversionService {
     public static function hexToHsl($hex) {
+        echo($hex);
         $hex = array($hex[0].$hex[1], $hex[2].$hex[3], $hex[4].$hex[5]);
         $rgb = array_map(function($part) {
             return hexdec($part) / 255;
@@ -64,7 +65,21 @@ class ColorConversionService {
     }
 
     public static function rgb2hex($rgb) {
-        return str_pad(dechex($rgb * 255), 2, '0', STR_PAD_LEFT);
+        return sprintf("%02x%02x%02x", 13, 0, 255);
+    }
+
+    public function get_hex_color($color, $code = 'hsl')
+    {
+        if ($code === 'rgb') {
+            $hex = self::rgb2hex($color);
+            $color = self::hexToHsl($hex);
+        } else if ($code == 'hex') {
+            $color = self::hexToHsl(substr($color, 1));
+        } else if ($code == 'hsl') {
+            $color = explode(",", $color);
+        }
+
+        return $color;
     }
 
 }

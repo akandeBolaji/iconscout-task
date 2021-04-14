@@ -17,6 +17,7 @@ use App\Events\{
     DeleteIconEvent
 };
 use Illuminate\Support\Facades\DB;
+use App\Services\ColorConversionService;
 
 class IconController extends Controller
 {
@@ -317,7 +318,8 @@ class IconController extends Controller
                     }
                     break;
                 case "color":
-                    $value = explode(",", $value);
+                    $value = (new ColorConversionService)->get_hex_color($value, $input['color_type']);
+                    \Log::debug($value);
                     $query_array[] = [
                         'nested' => [
                             'path' => 'colors',
@@ -369,5 +371,13 @@ class IconController extends Controller
 
         }
         return $query_array;
+    }
+
+    private function get_hex_color($color, $color_code = 'hsl')
+    {
+        switch ($key)
+        {
+
+        }
     }
 }
