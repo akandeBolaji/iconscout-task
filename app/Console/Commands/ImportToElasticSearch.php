@@ -79,6 +79,9 @@ class ImportToElasticSearch extends Command
                     'properties' => [
                         'colors' => [
                             'type' => 'nested'
+                        ],
+                        'style' => [
+                            'type' => 'keyword'
                         ]
                     ]
                 ]

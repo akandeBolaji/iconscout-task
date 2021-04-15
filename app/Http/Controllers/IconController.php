@@ -228,6 +228,13 @@ class IconController extends Controller
                         'filter' =>  $this->generate_search_filter($input),
                     ],
                 ],
+                "aggs" => [
+                    "style-agg" => [
+                      "terms" => [
+                        "field" => "style"
+                      ]
+                    ]
+                ]
             ]
         ];
 
