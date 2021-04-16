@@ -36,7 +36,7 @@ class AdminController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'type' => ['team-member', 'team-admin']])) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'inactive' => 0, 'type' => ['team-member', 'team-admin']])) {
             $request->session()->regenerate();
 
             return redirect()->intended('admin');

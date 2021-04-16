@@ -11,38 +11,36 @@ $heads = [
 
 function btnEdit($member)
 {
-    return "<button onclick='myFunction($member)' data-toggle='modal' data-target='#editModal' class='btn btn-xs btn-default text-primary mx-1 shadow' title='Edit'>
+    return "<button onclick='editClicked($member)' data-toggle='modal' data-target='#editModal' class='btn btn-xs btn-default text-primary mx-1 shadow' title='Edit'>
                 <i class='fa fa-lg fa-fw fa-pen'></i>
             </button>";
 }
 
-// $btnEdit = "<button onclick='myFunction($ghd)' data-toggle='modal' data-target='#modalPurple' class='btn btn-xs btn-default text-primary mx-1 shadow' title='Edit'>
-//                 <i class='fa fa-lg fa-fw fa-pen'></i>
-//             </button>";
-$btnDelete = '<button class="btn btn-xs btn-default text-danger mx-1 shadow"  title="Delete">
-                  <i class="fa fa-lg fa-fw fa-trash"></i>
-              </button>';
-$btnDetails = '<button class="btn btn-xs btn-default text-teal mx-1 shadow" title="Details">
-                   <i class="fa fa-lg fa-fw fa-eye"></i>
-               </button>';
+function btnDelete($member)
+{
+    return  "<button onclick='deleteClicked($member)' data-toggle='modal' data-target='#deleteModal' class='btn btn-xs btn-default text-danger mx-1 shadow'  title='Delete'>
+                  <i class='fa fa-lg fa-fw fa-trash'></i>
+              </button>";
+}
 
+function btnDetails($member)
+{
+    return   "<button onclick='detailsClicked($member)' data-toggle='modal' data-target='#detailsModal' class='btn btn-xs btn-default text-teal mx-1 shadow' title='Details'>
+                   <i class='fa fa-lg fa-fw fa-eye'></i>
+               </button>";
+}
 
 // dd($members);
 
 $config = [
-    'data' => $members->map(function ($member) use ($btnDelete, $btnDetails) {
+    'data' => $members->map(function ($member){
         return [
             $member->id,
             $member->user->name,
             $member->user->email,
-            '<nobr>'.btnEdit($member).$btnDelete.$btnDetails.'</nobr>'
+            '<nobr>'.btnEdit($member).btnDelete($member).btnDetails($member).'</nobr>'
     ];
     })->toArray(),
-    // 'data' => [
-    //     [22, 'John Bender', '+02 (123) 123456789', '<nobr>'.btnEdit(22).$btnDelete.$btnDetails.'</nobr>'],
-    //     [19, 'Sophia Clemens', '+99 (987) 987654321', '<nobr>'.btnEdit(19).$btnDelete.$btnDetails.'</nobr>'],
-    //     [3, 'Peter Sousa', '+69 (555) 12367345243', '<nobr>'.btnEdit(3).$btnDelete.$btnDetails.'</nobr>'],
-    // ],
     'order' => [[1, 'asc']],
     'columns' => [null, null, null, ['orderable' => false]],
 ];
@@ -60,6 +58,7 @@ $config = [
             </tr>
         @endforeach
     </x-adminlte-datatable>
+    <x-adminlte-button theme="primary" data-toggle='modal' data-target='#newMember' label="Create new member"/>
     <x-adminlte-modal id="editModal" title="Edit Member" theme="blue"
         icon="fas fa-bolt" size='lg' disable-animations>
             <form method="POST" action="/">
@@ -77,54 +76,48 @@ $config = [
                 </x-slot>
             </form>
     </x-adminlte-modal>
+    <x-adminlte-modal id="deleteModal" title="Delete member" size="sm" theme="blue" disable-animations>
+        <div id="deleteText"></div>
+        <x-slot name="footerSlot">
+            <x-adminlte-button class="mr-auto" theme="success" onclick="submitDelete()" label="Accept"/>
+            <x-adminlte-button theme="danger" label="Dismiss" data-dismiss="modal"/>
+        </x-slot>
+    </x-adminlte-modal>
+    <x-adminlte-modal id="detailsModal" title="View member" size="sm" theme="blue" disable-animations>
+        <ul class="list-group">
+            <li id="detailsId" class="list-group-item"></li>
+            <li id="detailsName" class="list-group-item"></li>
+            <li id="detailsEmail" class="list-group-item"></li>
+        </ul>
+        <x-slot name="footerSlot">
+            <x-adminlte-button theme="danger" label="Dismiss" data-dismiss="modal"/>
+        </x-slot>
+    </x-adminlte-modal>
+    <x-adminlte-modal id="newMember" title="Create New Member" theme="blue"
+        icon="fas fa-bolt" size='lg' disable-animations>
+            <form method="POST" action="/">
+                <label for="basic-url">Name</label>
+                <div class="input-group mb-3">
+                    <input name="name" type="text" class="form-control"  id="newName" placeholder="Name">
+                </div>
+                <label for="basic-url">Email Address</label>
+                <div class="input-group mb-3">
+                    <input name="email" type="text" class="form-control"  id="newEmail" placeholder="Email">
+                </div>
+                <label for="basic-url">Password</label>
+                <div class="input-group mb-3">
+                    <input name="password" type="password" class="form-control"  id="newPassword" placeholder="Password">
+                </div>
+                <x-adminlte-button type="submit" onclick="submitNew(event)" class="ml-auto" theme="success" label="Create"/>
+                <x-slot name="footerSlot">
+                    <x-adminlte-button theme="danger" label="Dismiss" data-dismiss="modal"/>
+                </x-slot>
+            </form>
+    </x-adminlte-modal>
 @stop
 
 @section('js')
-    <script>
-        let selectedMember;
-
-        const myFunction = (member) => {
-            selectedMember = member;
-            let name = document.getElementById("editName");
-            name.placeholder = member.user.name;
-            let email = document.getElementById("editEmail");
-            email.placeholder = member.user.email;
-        }
-
-        const submitEdit = (event) => {
-            event.preventDefault();
-            let name = document.getElementById("editName").value
-            let email = document.getElementById("editEmail").value
-            if (!name && !email) {
-                return;
-            }
-            let data = {
-                name:   name
-                        ? name
-                        : selectedMember.user.name,
-                email: email
-                        ? email
-                        : selectedMember.user.email
-            }
-            fetch(`members/${selectedMember.id}`, {
-                method: 'PUT', // or 'PUT'
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                body: JSON.stringify(data),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                    location.reload();
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    //TODO implement error
-                });
-            }
-     </script>
+    <script src="{{  asset('js/member.js') }}"></script>
 @stop
 
 

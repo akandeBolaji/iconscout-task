@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Redirect;
-use App\Models\TeamMember;
+use App\Models\{
+    TeamMember,
+    User
+};
+use Hash;
 
 class MemberController extends Controller
 {
@@ -42,7 +46,25 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //TODO validations
+        $user = User::where('email', $request->email)->first();
+        if ($user){
+            return response()->json(['success' => false], 200);
+        }
+        $user = User::create([
+            'email' => $request->email,
+            'type'  => 'team-member',
+            'name'  => $request->name,
+            'password' =>  Hash::make($request->password)
+        ]);
+
+        $team = Auth::user()->team();
+        TeamMember::create([
+            'team_id' => $team->id,
+            'user_id' => $user->id
+        ]);
+
+        return response()->json(['success' => true], 200);
     }
 
     /**
@@ -93,6 +115,10 @@ class MemberController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $team_member = TeamMember::find($id);
+        $team_member->user->inactive = 1;
+        $team_member->push();
+        $team_member->delete();
+        return response()->json(['success' => true], 200);
     }
 }
