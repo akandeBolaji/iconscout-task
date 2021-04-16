@@ -20,7 +20,8 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('dashboard');
     Route::post('/admin/logout', [App\Http\Controllers\AdminController::class, 'logout'])->name('logout');
-    Route::get('/admin/icons', [App\Http\Controllers\AdminController::class, 'icon'])->name('icon');
+    Route::get('/admin/icons ', [App\Http\Controllers\AdminController::class, 'icon'])->name('icon');
+    Route::resource('/admin/members', App\Http\Controllers\MemberController::class);
 });
 
 Route::middleware(['guest'])->group(function () {

@@ -16,7 +16,9 @@ class AdminController extends Controller
 
     public function index(Request $request)
     {
-        return view('admin.index');
+        $user = Auth::user();
+        $user->team = $user->team();
+        return view('admin.index', ['user' => $user]);
     }
 
     public function login(Request $request)

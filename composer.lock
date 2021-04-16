@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fdee7df6cbda47ffc364d3b6e44f1ca6",
+    "content-hash": "c54fc24a44940afef36eaf14f4e60be6",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
-            "version": "v3.0.5",
+            "version": "v3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ColorlibHQ/AdminLTE.git",
-                "reference": "6b8b69261f1aacbb4be037c934f3c3652e6dff27"
+                "reference": "c641d7f5716ed47e76f70ab16e05ae41420120b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ColorlibHQ/AdminLTE/zipball/6b8b69261f1aacbb4be037c934f3c3652e6dff27",
-                "reference": "6b8b69261f1aacbb4be037c934f3c3652e6dff27",
+                "url": "https://api.github.com/repos/ColorlibHQ/AdminLTE/zipball/c641d7f5716ed47e76f70ab16e05ae41420120b8",
+                "reference": "c641d7f5716ed47e76f70ab16e05ae41420120b8",
                 "shasum": ""
             },
             "type": "library",
@@ -31,7 +31,7 @@
                 }
             ],
             "description": "AdminLTE - admin control panel and dashboard that's based on Bootstrap 4",
-            "homepage": "http://adminlte.io/",
+            "homepage": "https://adminlte.io/",
             "keywords": [
                 "JS",
                 "admin",
@@ -43,7 +43,7 @@
                 "theme",
                 "web"
             ],
-            "time": "2020-05-19T20:41:11+00:00"
+            "time": "2021-03-22T07:30:50+00:00"
         },
         {
             "name": "asm89/stack-cors",
@@ -1425,20 +1425,20 @@
         },
         {
             "name": "jeroennoten/laravel-adminlte",
-            "version": "v3.5.4",
+            "version": "dev-next",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jeroennoten/Laravel-AdminLTE.git",
-                "reference": "4c155cf3b90b5679bc2edfbe873b2be5fa0f9815"
+                "reference": "6cf570ecbdda39cabaf2319c5d546dcb78c23af4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jeroennoten/Laravel-AdminLTE/zipball/4c155cf3b90b5679bc2edfbe873b2be5fa0f9815",
-                "reference": "4c155cf3b90b5679bc2edfbe873b2be5fa0f9815",
+                "url": "https://api.github.com/repos/jeroennoten/Laravel-AdminLTE/zipball/6cf570ecbdda39cabaf2319c5d546dcb78c23af4",
+                "reference": "6cf570ecbdda39cabaf2319c5d546dcb78c23af4",
                 "shasum": ""
             },
             "require": {
-                "almasaeed2010/adminlte": "3.0.*",
+                "almasaeed2010/adminlte": "3.1.*",
                 "laravel/framework": ">=6.0",
                 "php": ">=7.2.0"
             },
@@ -1476,20 +1476,20 @@
                 "administrator",
                 "laravel"
             ],
-            "time": "2021-03-22T16:23:11+00:00"
+            "time": "2021-04-09T14:59:53+00:00"
         },
         {
             "name": "laravel/framework",
-            "version": "v8.36.2",
+            "version": "v8.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "0debd8ad6b5aa1f61ccc73910adf049af4ca0444"
+                "reference": "cf4082973abc796ec285190f0603380021f6d26f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/0debd8ad6b5aa1f61ccc73910adf049af4ca0444",
-                "reference": "0debd8ad6b5aa1f61ccc73910adf049af4ca0444",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/cf4082973abc796ec285190f0603380021f6d26f",
+                "reference": "cf4082973abc796ec285190f0603380021f6d26f",
                 "shasum": ""
             },
             "require": {
@@ -1640,11 +1640,7 @@
                 "framework",
                 "laravel"
             ],
-            "support": {
-                "issues": "https://github.com/laravel/framework/issues",
-                "source": "https://github.com/laravel/framework"
-            },
-            "time": "2021-04-07T12:37:22+00:00"
+            "time": "2021-04-13T13:49:49+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -6000,16 +5996,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.4.11",
+            "version": "v1.4.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "e46a3228da4e95a411a981ac807bd119ab2485fa"
+                "reference": "d1a91b03885c9c29bc2d88d61a4b10bd1f678156"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/e46a3228da4e95a411a981ac807bd119ab2485fa",
-                "reference": "e46a3228da4e95a411a981ac807bd119ab2485fa",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/d1a91b03885c9c29bc2d88d61a4b10bd1f678156",
+                "reference": "d1a91b03885c9c29bc2d88d61a4b10bd1f678156",
                 "shasum": ""
             },
             "require": {
@@ -6052,11 +6048,7 @@
                 "docker",
                 "laravel"
             ],
-            "support": {
-                "issues": "https://github.com/laravel/sail/issues",
-                "source": "https://github.com/laravel/sail"
-            },
-            "time": "2021-04-06T14:00:39+00:00"
+            "time": "2021-04-13T15:35:40+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -8050,7 +8042,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "jeroennoten/laravel-adminlte": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

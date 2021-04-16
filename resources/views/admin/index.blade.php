@@ -6,8 +6,10 @@
     <h1>Dashboard</h1>
 @stop
 
+
+
 @section('content')
-    <p>Welcome to this beautiful admin panel.</p>
+    <p>Welcome back {{ $user->name }}, @if ($user->team)to team {{ $user->team->name }} @endif</p>
 @stop
 
 @section('css')

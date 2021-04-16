@@ -49,4 +49,18 @@ class User extends Authenticatable
         return $this->hasMany(Icon::class, 'contributor_id');
     }
 
+    public function team_member()
+    {
+        if ($this->type == 'team-member') {
+            return $this->hasOne(TeamMember::class)->withDefault();
+        } else if ($this->type == 'team-admin') {
+            return $this->hasOne(TeamAdmin::class)->withDefault();
+        }
+    }
+
+    public function team()
+    {
+        return $this->team_member->team;
+    }
+
 }
