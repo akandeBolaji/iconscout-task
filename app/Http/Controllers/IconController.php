@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\ColorConversionService;
 use Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class IconController extends Controller
 {
@@ -58,7 +59,7 @@ class IconController extends Controller
             ], 400);
         }
 
-        // Search for gi ven text and return data
+        // Search for given text and return data
         $data = $this->search_icons($request->all());
 
         $iconArrayIds = [];
@@ -75,10 +76,15 @@ class IconController extends Controller
             $iconArrayIds[] = $hit['_source']['id'];
         }
 
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage =  $request['per_page'] ?? 20;
+
         // Retrieve found icons from database (TODO Optimize)
         $icons = Icon::with('tags', 'categories', 'colors')
                 ->whereIn('id', $iconArrayIds)
-                ->paginate($request->per_page ?? 15);
+                ->get();
+
+        $paginate_icons = new LengthAwarePaginator($icons, $data['hits']['total']['value'], $perPage, $currentPage);
 
         $response = [
             "status" => "success",
@@ -88,7 +94,7 @@ class IconController extends Controller
             "aggregations" => [
                 "style" => $style_agg
             ],
-            "items" => $icons,
+            "items" => $paginate_icons,
         ];
 
         return $response;
@@ -247,7 +253,11 @@ class IconController extends Controller
 
     private function search_icons($input)
     {
+        $size = $input['per_page'] ?? 20;
+        $from = isset($input['page']) && $input['page'] != 1 ? (($input['page'] - 1) * $size) + 1 : 0;
         $params = [
+            "from" => $from,
+            "size" => $size,
             'index' => Icon::ELASTIC_INDEX,
             'body' => [
                 'sort' => [
@@ -338,7 +348,7 @@ class IconController extends Controller
         $query_array = [];
 
         foreach ($input as $key => $value) {
-            if ($key == 'query') {
+            if ($key == 'query' || $key == 'page') {
                 continue;
             }
             switch ($key) {
@@ -412,10 +422,13 @@ class IconController extends Controller
 
                     ];
                     break;
-                default:
+                case "style":
                     $query_array[] = ['term' => [
-                        "$key" => $value
+                        "style" => $value
                     ]];
+                    break;
+                default:
+                    "";
             }
 
 
