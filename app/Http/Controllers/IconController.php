@@ -19,6 +19,7 @@ use App\Events\{
 use Illuminate\Support\Facades\DB;
 use App\Services\ColorConversionService;
 use Auth;
+use Illuminate\Support\Facades\Validator;
 
 class IconController extends Controller
 {
@@ -45,25 +46,52 @@ class IconController extends Controller
 
     public function search(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            "query" => 'required'
+        ]);
 
-        // Search for given text and return data
-        $data = $this->search_icons($request->all());
-        $iconArrayIds = [];
-
-        // If there are any icons that match given search text "hits" fill their id's in array
-        if($data['hits']['total'] > 0) {
-
-            foreach ($data['hits']['hits'] as $hit) {
-                $iconArrayIds[] = $hit['_source']['id'];
-            }
+        if ($validator->fails()) {
+			$error = $validator->errors()->first();
+			return response()->json([
+				'error' => 'invalid_input',
+				'message' => $error
+            ], 400);
         }
 
-        // Retrieve found icons from database
-        $icons = Icon::with('tags', 'categories', 'colors')
-                        ->whereIn('id', $iconArrayIds)
-                        ->get();
+        // Search for gi ven text and return data
+        $data = $this->search_icons($request->all());
 
-        \Log::debug($data);
+        $iconArrayIds = [];
+        $style_agg = [];
+
+        foreach ($data["aggregations"]["styles"]["buckets"] as $style) {
+            $style_agg[] = [
+                "name" => $style["key"],
+                "count" => $style["doc_count"]
+            ];
+        }
+
+        foreach ($data['hits']['hits'] as $hit) {
+            $iconArrayIds[] = $hit['_source']['id'];
+        }
+
+        // Retrieve found icons from database (TODO Optimize)
+        $icons = Icon::with('tags', 'categories', 'colors')
+                ->whereIn('id', $iconArrayIds)
+                ->paginate($request->per_page ?? 15);
+
+        $response = [
+            "status" => "success",
+        ];
+
+        $response["response"] = [
+            "aggregations" => [
+                "style" => $style_agg
+            ],
+            "items" => $icons,
+        ];
+
+        return $response;
     }
 
     public function store(Request $request)
@@ -245,7 +273,7 @@ class IconController extends Controller
                     ],
                 ],
                 "aggs" => [
-                    "style-agg" => [
+                    "styles" => [
                       "terms" => [
                         "field" => "style"
                       ]
@@ -394,13 +422,5 @@ class IconController extends Controller
 
         }
         return $query_array;
-    }
-
-    private function get_hex_color($color, $color_code = 'hsl')
-    {
-        switch ($key)
-        {
-
-        }
     }
 }

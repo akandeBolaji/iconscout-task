@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\{
+use App\Models\{
     User,
     ApiToken,
 
