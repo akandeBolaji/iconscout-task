@@ -25,7 +25,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'v1'], function () {
     Route::post('user/login', [UserController::class, 'login']);
 
-    // Route::group(['middleware' => 'api.user'], function () {
+    Route::group(['middleware' => 'api.user'], function () {
         Route::get('/search', [IconController::class, 'search']);
-    // });
+    });
 });
