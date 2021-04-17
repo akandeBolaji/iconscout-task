@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -62,6 +63,16 @@ class User extends Authenticatable
     public function team()
     {
         return $this->team_member->team;
+    }
+
+    public function roll_api_key()
+    {
+        do {
+            $token = base64_encode( hash('sha256',time()) . hash('sha256',getenv('APP_KEY')) . random_bytes(206) );
+            $this->api_token = $token;
+        } while( $this->where('api_token', $this->api_token)->exists() );
+        $this->api_token_expire_at = Carbon::now()->addDays(30);
+        $this->save();
     }
 
 }

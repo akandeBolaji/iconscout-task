@@ -2,7 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\IconController;
+use App\Http\Controllers\{
+    IconController,
+    UserController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -20,5 +23,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::get('/search', [IconController::class, 'search']);
+    Route::post('user/login', [UserController::class, 'login']);
+
+    Route::group(['middleware' => 'api.user'], function () {
+        Route::get('/search', [IconController::class, 'search']);
+    });
 });
