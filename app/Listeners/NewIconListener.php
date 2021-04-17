@@ -7,6 +7,7 @@ use App\Models\Icon;
 use Elasticsearch\ClientBuilder;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Services\ColorConversionService;
 
 class NewIconListener
 {
@@ -44,7 +45,7 @@ class NewIconListener
                 'style'        => $icon->style,
                 'price'        => $icon->price,
                 'tags'         => implode(',', $icon->tags->pluck('value')->toArray()),
-                'colors'       => implode(',', $icon->colors->pluck('value')->toArray()),
+                'colors'       => (new ColorConversionService)->generate_nested_colors($icon->colors),
                 'categories'   => implode(',', $icon->categories->pluck('value')->toArray()),
             ],
             'index' => Icon::ELASTIC_INDEX,

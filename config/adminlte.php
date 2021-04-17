@@ -241,12 +241,6 @@ return [
             'icon'        => 'fas fa-fw fa-user',
             'can'         => 'manage-team',
         ],
-        [
-            'text'        => 'Team Settings',
-            'url'         => 'admin/team',
-            'icon'        => 'fas fa-fw fa-lock',
-            'can'         => 'manage-team',
-        ],
     ],
 
     /*

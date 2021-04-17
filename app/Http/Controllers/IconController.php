@@ -18,6 +18,7 @@ use App\Events\{
 };
 use Illuminate\Support\Facades\DB;
 use App\Services\ColorConversionService;
+use Auth;
 
 class IconController extends Controller
 {
@@ -26,6 +27,20 @@ class IconController extends Controller
     public function __construct()
     {
         $this->client = ClientBuilder::create()->build();
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $user = Auth::user();
+        if ($user->type != 'team-member') {
+            return Redirect::to('admin');
+        }
+        return view('admin.icon', ['icons' => $user->icons]);
     }
 
     public function search(Request $request)
@@ -58,7 +73,6 @@ class IconController extends Controller
             'img_url' => 'required',
             'price' => 'required',
             'style' => 'required',
-            'contributor' => 'required',
             'tags' => 'required|array',
             'categories' => 'required|array',
             'colors' => 'required|array',
@@ -66,13 +80,11 @@ class IconController extends Controller
 
         DB::beginTransaction();
         try {
-            $contributor = User::where('name', $validatedData["contributor"])
-                            ->orWhere('id', $validatedData["contributor"] )
-                            ->firstOrCreate(["name" => $validatedData["contributor"]]);
+            $contributor = Auth::user();
 
             $icon = Icon::create([
                 "name" => $validatedData["name"],
-                "img_url" => $validatedData["image"],
+                "img_url" => $validatedData["img_url"],
                 "price" => $validatedData["price"],
                 "style" => $validatedData["style"],
                 "contributor_id" => $contributor->id,
@@ -94,8 +106,12 @@ class IconController extends Controller
 
             $colors = array_values($validatedData["colors"]);
             foreach ($colors as $c) {
-                $color = Color::where('value', $c)
-                        ->firstOrCreate(["value" => $c]);
+                $c =  substr($c, 1);
+                $color = Color::where('hex_value', $c)
+                        ->firstOrCreate(
+                            ['hex_value' => $c],
+                            ['hsl_value' => implode(",", ColorConversionService::hexToHsl($c))]
+                        );
                 $icon->colors()->attach($color);
             }
             DB::commit();
@@ -103,13 +119,11 @@ class IconController extends Controller
             // Trigger an event to index new icon in Elasticsearch
             NewIconEvent::dispatch($icon);
 
-            return  response()->json(["message" => "success"], 200);
+            return response()->json(["success" => true], 200);
         } catch(\Exception $e) {
             DB::rollBack();
-            return response()->json(["message" => "error"], 500);
+            return response()->json(["success" => false], 500);
         }
-
-
     }
 
     public function update(Request $request, $id)
@@ -119,7 +133,6 @@ class IconController extends Controller
             'img_url' => 'required',
             'price' => 'required',
             'style' => 'required',
-            'contributor' => 'required',
             'tags' => 'required|array',
             'categories' => 'required|array',
             'colors' => 'required|array',
@@ -127,20 +140,18 @@ class IconController extends Controller
 
         DB::beginTransaction();
         try {
-            $contributor = User::where('name', $validatedData["contributor"])
-                            ->orWhere('id', $validatedData["contributor"] )
-                            ->firstOrCreate(["name" => $validatedData["contributor"]]);
+            $contributor = Auth::user();
+            $icon = Icon::find($id);
 
-            $icon = Icon::find($id)
-                    ->update([
-                        "name" => $validatedData["name"],
-                        "img_url" => $validatedData["image"],
-                        "price" => $validatedData["price"],
-                        "style" => $validatedData["style"],
-                        "contributor_id" => $contributor->id,
-                    ]);
+            $icon->update([
+                "name" => $validatedData["name"],
+                "img_url" => $validatedData["img_url"],
+                "price" => $validatedData["price"],
+                "style" => $validatedData["style"],
+                "contributor_id" => $contributor->id,
+            ]);
 
-            //temp implementation
+            //temporary implementation
             $icon->tags()->detach();
             $icon->colors()->detach();
             $icon->categories()->detach();
@@ -161,8 +172,12 @@ class IconController extends Controller
 
             $colors = array_values($validatedData["colors"]);
             foreach ($colors as $c) {
-                $color = Color::where('value', $c)
-                        ->firstOrCreate(["value" => $c]);
+                $c =  substr($c, 1);
+                $color = Color::where('hex_value', $c)
+                        ->firstOrCreate(
+                            ['hex_value' => $c],
+                            ['hsl_value' => implode(",", ColorConversionService::hexToHsl($c))]
+                        );
                 $icon->colors()->attach($color);
             }
 
@@ -171,14 +186,15 @@ class IconController extends Controller
             // Trigger an event to update icon in Elasticsearch
             UpdateIconEvent::dispatch($icon);
 
-            return response()->json(["message" => "success"], 200);
+            return response()->json(["success" => true], 200);
         } catch(\Exception $e) {
+            \Log::debug($e);
             DB::rollBack();
-            return response()->json(["message" => "error"], 500);
+            return response()->json(["success" => false], 500);
         }
     }
 
-    public function delete(Request $request, $id)
+    public function destroy(Request $request, $id)
     {
         DB::beginTransaction();
         try {
@@ -365,7 +381,7 @@ class IconController extends Controller
                             ],
                             'ignore_unmapped' => true
                         ],
-                        
+
                     ];
                     break;
                 default:

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Icon;
 use Elasticsearch\ClientBuilder;
 use Illuminate\Console\Command;
+use App\Services\ColorConversionService;
 
 class ImportToElasticSearch extends Command
 {
@@ -82,6 +83,9 @@ class ImportToElasticSearch extends Command
                         ],
                         'style' => [
                             'type' => 'keyword'
+                        ],
+                        'name' => [
+                            'type' => 'text'
                         ]
                     ]
                 ]
@@ -155,7 +159,7 @@ class ImportToElasticSearch extends Command
                 'style'             => $icon->style,
                 'price'             => $icon->price,
                 'tags'              => implode(',', $icon->tags->pluck('value')->toArray()),
-                'colors'            => $this->generate_nested_colors($icon->colors),
+                'colors'            => (new ColorConversionService)->generate_nested_colors($icon->colors),
                 'categories'        => implode(',', $icon->categories->pluck('value')->toArray()),
             ];
 
@@ -174,20 +178,5 @@ class ImportToElasticSearch extends Command
         $end = microtime(true);
         echo "-- Uploaded in " . round($end - $start, 2) . " seconds" . PHP_EOL;
         return $i;
-    }
-
-    private function generate_nested_colors($colors)
-    {
-        $result = [];
-        $values = $colors->pluck('hsl_value')->toArray();
-        foreach ($values as $value) {
-            $value = explode(",", $value);
-            $result[] = [
-                "h" => $value[0],
-                "s" => $value[1],
-                "l" => $value[2]
-            ];
-        }
-        return $result;
     }
 }

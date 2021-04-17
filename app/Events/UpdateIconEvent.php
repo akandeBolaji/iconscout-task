@@ -9,19 +9,22 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Icon;
 
 class UpdateIconEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $icon;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Icon $icon)
     {
-        //
+        $this->icon = $icon;
     }
 
     /**

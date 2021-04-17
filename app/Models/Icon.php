@@ -38,6 +38,8 @@ class Icon extends Model
         'contributor_id'
     ];
 
+    protected $with = ['categories', 'colors', 'tags'];
+
     /**
      * The attributes that should be hidden for arrays.
      *
