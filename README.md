@@ -1,62 +1,184 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Icon Search
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Simple API to search and filter icons.
 
-## About Laravel
+## Simple UI consuming API
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> https://iconscout-test.herokuapp.com/
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Admin Panel
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+> https://iconscout-test.herokuapp.com/admin
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Installation
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. Clone the project using git
+2. Create `.env` file from `.env.example` file and set database parameters, elastic host and App Key
+3. Run `composer install`
+4. Run `php artisan migrate:fresh --seed` to migrate and seed table
+5. Run `php artisan seed:icons_to_db` to seed icons from external source
+6. Run `php artisan import:data_to_elasticsearch` to export data to elastic search
 
-## Laravel Sponsors
+## Seed Users
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Team Admin -
 
-### Premium Partners
+```
+{
+    "email" : "johndoe@iconscout.com",
+    "password" : "password"
+}
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+Team Member -
 
-## Contributing
+```
+{
+    "email" : "jamesdoe@iconscout.com",
+    "password" : "password"
+}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+API user -
 
-## Code of Conduct
+```
+{
+    "email" : "pauldoe@iconscout.com",
+    "password" : "password"
+}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## API Endpoints
 
-## Security Vulnerabilities
+## GET
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Search
 
-## License
+> https://iconscout-test.herokuapp.com/api/v1/search
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## POST
+
+Login
+
+> https://iconscout-test.herokuapp.com/api/v1/user/login
+
+---
+
+### GET Search
+
+Search Icons
+
+**Parameters**
+
+|            Name | Required |     Type     | Description                                               |
+| --------------: | :------: | :----------: | --------------------------------------------------------- |
+| `Authorization` | required | Bearer Token | Auth user bearer token.                                   |
+|         `query` | required |    String    | Icon Search Term.                                         |
+|         `style` |    -     |    String    | Filter style type (Flat, Line, Dualtone, Colored Outline) |
+|         `price` |    -     |    String    | Filter price (Free, Premium, Custom price(5, 7))          |
+|         `color` |    -     |    String    | Filter color (HSL, RGB formats)                           |
+|    `color_type` |    -     |    String    | Filter color type(HSL, RGB), defualts to HSL              |
+|          `page` |    -     |    String    | Page number, defaults to 1                                |
+|      `per_page` |    -     |    String    | Results per page, defaults to 20                          |
+
+**Response**
+
+```
+
+// Sample Success
+Status Code- 200
+{
+    "status": "success",
+    "response": {
+        "aggregations": {
+            "style": [
+                {
+                    "name": "Line",
+                    "count": 78
+                }
+            ]
+        },
+        "items": {
+            "current_page": 1,
+            "data": [
+                {
+                    "id": 194,
+                    "name": "Business",
+                    "img_url": "https://s3.wasabisys.com/icons-dev/icon/premium/png-256-thumb/114.png",
+                    "style": "Line",
+                    "price": "2.00",
+                    "categories": [
+                        {
+                            "id": 154,
+                            "value": "Business"
+                        }
+                    ],
+                    "colors": [
+                        {
+                            "id": 264,
+                            "hex_value": "373431",
+                            "hsl_value": "8,5,20",
+                            "dec_value": null,
+                            "name": null
+                        }
+                    ],
+                    "tags": [
+                        {
+                            "id": 464,
+                            "value": "productivity"
+                        }
+                    ]
+                }
+            ],
+            "first_page_url": "/?page=1",
+            "from": 1,
+            "last_page": 4,
+            "last_page_url": "/?page=4",
+            "links": [
+            ],
+            "next_page_url": "/?page=2",
+            "path": "/",
+            "per_page": 20,
+            "prev_page_url": null,
+            "to": 20,
+            "total": 78
+        }
+    }
+}
+```
+
+---
+
+---
+
+### POST Login
+
+Login an existing user
+
+**Parameters**
+
+|       Name | Required |  Type  | Description             |
+| ---------: | :------: | :----: | ----------------------- |
+|    `email` | required | string | user unique email name. |
+| `password` | required | string | Minimum of 8 characters |
+
+**Response**
+
+```
+// Sample Error
+Status Code - 400
+{
+    "error": "invalid_credentials",
+    "message": "Invalid Credentials"
+}
+
+// Sample Success
+Status Code- 200
+{
+    "api_token": "YmY2MDE4Mzg0ZWY2ODI5YTliMjcwNjUyODNhNzQwNDEyN2UxODk1ZDEzOTc5YzVjY2FhMDNiNGQ3ZTk4MDg1MDgyNTFjZjRjMDNhOWRkYjc1MTA5Njk2ZjU3ZjNmOGFmMDVjMjVmYzM5ZWRhNWMwOTgwM2RkZDM0MzU5YjI1YTGn+iKGW5lyAS4oRduMGY90B/Qvz0PY1seLo1KAJoaLV4MjKQ+3V1Z/B4mMPBlqe/gkp+XMRcFaB/2v3QNcOskDmm1NYNVR01YcGiiYVZGHeVs40dBZkMHfrb+hJy+s/OGK8oIRroLrbONfhtsU4u+Qh6G4d5Fm5AQbB8fMDRxwOeN3ylDM431ys05DajpTIz8ZxLPfRTtsPo/TRnOwS8gwhVqDNNq+tntRJwWxGqh4de37PwRY1CBeYe0Rfq6RM8++yEZesTATy+6uZnQDzQ=="
+}
+```
+
+---
