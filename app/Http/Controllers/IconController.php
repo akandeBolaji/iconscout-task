@@ -28,7 +28,9 @@ class IconController extends Controller
 
     public function __construct()
     {
-        $this->client = ClientBuilder::create()->build();
+        $this->client = ClientBuilder::create()
+                        ->setHosts([getenv('ELASTIC_SEARCH_HOST')])
+                        ->build();
     }
 
     /**
