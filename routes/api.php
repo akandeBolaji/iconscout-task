@@ -28,4 +28,5 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'api.user'], function () {
         Route::get('/search', [IconController::class, 'search']);
     });
+    Route::get('/search-no-jwt', [IconController::class, 'search']);
 });
