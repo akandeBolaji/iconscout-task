@@ -22,7 +22,7 @@
         Price - {{ icon.price == 0 ? "Free" : `$${icon.price}` }}
       </p>
       <p class="text-base text-gray-700 truncate">
-        Style - {{ icon.style.name }}
+        Style - {{ icon.style.value }}
       </p>
       <p class="text-base text-gray-700 truncate">
         Tags -
