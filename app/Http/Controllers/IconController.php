@@ -407,8 +407,8 @@ class IconController extends Controller
                                             'range' =>
                                             [
                                                 'colors.h' => [
-                                                    'gte' => ceil($value[0] - $value[0] * 0.2),
-                                                    'lte' => ceil($value[0] + $value[0] * 0.2)
+                                                    'gte' => (int)round($value[0] - $value[0] * 0.2),
+                                                    'lte' => (int)round($value[0] + $value[0] * 0.2)
                                                 ]
                                             ]
                                         ],
@@ -416,8 +416,8 @@ class IconController extends Controller
                                             'range' =>
                                             [
                                                 'colors.s' => [
-                                                    'gte' => ceil($value[1] - $value[1] * 0.5),
-                                                    'lte' => ceil($value[1] + $value[1] * 0.5)
+                                                    'gte' => (int)round($value[1] - $value[1] * 0.5),
+                                                    'lte' => (int)round($value[1] + $value[1] * 0.5)
                                                 ]
                                             ]
                                         ],
@@ -425,8 +425,8 @@ class IconController extends Controller
                                             'range' =>
                                             [
                                                 'colors.l' => [
-                                                    'gte' => ceil($value[2] - $value[2] * 0.5),
-                                                    'lte' => ceil($value[2] + $value[2] * 0.5)
+                                                    'gte' => (int)round($value[2] - $value[2] * 0.5),
+                                                    'lte' => (int)round($value[2] + $value[2] * 0.5)
                                                 ]
                                             ]
                                         ]

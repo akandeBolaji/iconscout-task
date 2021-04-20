@@ -88,9 +88,9 @@ class ColorConversionService {
         foreach ($values as $value) {
             $value = explode(",", $value);
             $result[] = [
-                "h" => $value[0],
-                "s" => $value[1],
-                "l" => $value[2]
+                "h" => (int)$value[0],
+                "s" => (int)$value[1],
+                "l" => (int)$value[2]
             ];
         }
         return $result;
