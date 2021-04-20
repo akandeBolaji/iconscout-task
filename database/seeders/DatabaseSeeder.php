@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
             ->has(Color::factory()
                 ->count(2)
                 ->state(new Sequence(
-                    ['hex_value' => '85C88D', 'hsl_value' => '35,37,65'],
+                    ['hex_value' => '85C88D', 'hsl_value' => '127,37,65'],
                     ['hex_value' => 'FFFFFF', 'hsl_value' => '0,0,100'],
                 ))
             )

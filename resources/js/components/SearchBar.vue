@@ -23,6 +23,8 @@ export default {
       cost: null,
       style: null,
       debounce: null,
+      color: null,
+      color_type: null,
     };
   },
   computed: {
@@ -32,7 +34,7 @@ export default {
   },
   methods: {
     changeFilter(data) {
-      console.log(data);
+      console.log("filter", data);
       this.style = data.style;
       this.cost = data.cost;
       this.color = data.color;

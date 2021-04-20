@@ -55,8 +55,8 @@
         type="text"
         class="w-full h-10"
         @change="changeFilter"
-        v-model="filter.color"
-        placeholder="Enter Color"
+        v-model.lazy="filter.color"
+        placeholder="#7bdb85"
       />
     </div>
   </div>
@@ -68,7 +68,7 @@ export default {
       filter: {
         cost: "",
         style: "",
-        color: "#FFF000",
+        color: "",
         color_type: "hex",
       },
     };

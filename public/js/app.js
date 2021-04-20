@@ -3215,7 +3215,7 @@ __webpack_require__.r(__webpack_exports__);
       filter: {
         cost: "",
         style: "",
-        color: "#FFF000",
+        color: "",
         color_type: "hex"
       }
     };
@@ -3391,7 +3391,9 @@ __webpack_require__.r(__webpack_exports__);
       query: null,
       cost: null,
       style: null,
-      debounce: null
+      debounce: null,
+      color: null,
+      color_type: null
     };
   },
   computed: {// search() {
@@ -3400,7 +3402,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     changeFilter: function changeFilter(data) {
-      console.log(data);
+      console.log("filter", data);
       this.style = data.style;
       this.cost = data.cost;
       this.color = data.color;
@@ -3544,13 +3546,13 @@ __webpack_require__.r(__webpack_exports__);
 
 var icon = {
   /*
-   Defines the state being monitored for the module.
+  Defines the state being monitored for the module.
   */
   state: {
     searchTerm: {
-      query: '',
-      cost: '',
-      style: ''
+      query: "",
+      cost: "",
+      style: ""
     },
     searchResult: [],
     searchStatus: false
@@ -3563,16 +3565,18 @@ var icon = {
     searchIcon: function searchIcon(_ref, term) {
       var commit = _ref.commit,
           state = _ref.state;
-      commit('setSearchTerm', term);
-      commit('setSearchStatus', true);
+      commit("setSearchTerm", term);
+      commit("setSearchStatus", true);
 
       if (state.searchTerm) {
         _services_api_icon_js__WEBPACK_IMPORTED_MODULE_0__.default.search(term).then(function (res) {
-          commit('setSearchStatus', false);
+          commit("setSearchStatus", false);
           console.log(res.data.response.items.data);
-          commit('setSearchResult', res.data.response.items.data);
+          commit("setSearchResult", res.data.response.items.data);
         })["catch"](function (error) {
-          console.log('err', error); // commit('setAuthState', false);
+          console.log("err", error);
+          commit("setSearchStatus", false);
+          commit("setSearchResult", []); // commit('setAuthState', false);
         });
       }
     }
@@ -3594,11 +3598,11 @@ var icon = {
   },
 
   /*
-    Defines the getters used by the module
+  Defines the getters used by the module
   */
   getters: {
     /*
-        Returns the posts load status.
+    Returns the posts load status.
     */
     getSearchQuery: function getSearchQuery(state) {
       return state.searchTerm.query;
@@ -39667,22 +39671,22 @@ var render = function() {
           directives: [
             {
               name: "model",
-              rawName: "v-model",
+              rawName: "v-model.lazy",
               value: _vm.filter.color,
-              expression: "filter.color"
+              expression: "filter.color",
+              modifiers: { lazy: true }
             }
           ],
           staticClass: "w-full h-10",
-          attrs: { type: "text", placeholder: "Enter Color" },
+          attrs: { type: "text", placeholder: "#7bdb85" },
           domProps: { value: _vm.filter.color },
           on: {
-            change: _vm.changeFilter,
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.filter, "color", $event.target.value)
-            }
+            change: [
+              function($event) {
+                return _vm.$set(_vm.filter, "color", $event.target.value)
+              },
+              _vm.changeFilter
+            ]
           }
         })
       ])

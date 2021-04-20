@@ -284,6 +284,7 @@ class IconController extends Controller
                             ]]
                         ],
                         'filter' =>  $this->generate_search_filter($input),
+                         "minimum_should_match" => 1
                     ],
                 ],
                 "aggs" => [
@@ -302,12 +303,14 @@ class IconController extends Controller
         return $data;
     }
 
-    private function generate_color_filter($color)
+    protected function generate_color_filter($color)
     {
         if (!$color) {
             return;
         }
         $value = explode(",", $color);
+
+        \Log::debug([$value, 'vdsdfg',$value[1] - $value[1] * 2]);
 
         return [
             'path'  => "colors",
@@ -327,8 +330,8 @@ class IconController extends Controller
                             'range' =>
                             [
                                 'colors.s' => [
-                                    'gte' => ceil($value[1] - $value[1] * 0.1),
-                                    'lte' => ceil($value[1] + $value[1] * 0.1)
+                                    'gte' => ceil($value[1] - $value[1] * 2),
+                                    'lte' => ceil($value[1] + $value[1] * 2)
                                 ]
                             ]
                         ],
@@ -336,8 +339,8 @@ class IconController extends Controller
                             'range' =>
                             [
                                 'colors.l' => [
-                                    'gte' => ceil($value[2] - $value[2] * 0.1),
-                                    'lte' => ceil($value[2] + $value[2] * 0.1)
+                                    'gte' => ceil($value[2] - $value[2] * 0.3),
+                                    'lte' => ceil($value[2] + $value[2] * 0.3)
                                 ]
                             ]
                         ]
@@ -404,8 +407,8 @@ class IconController extends Controller
                                             'range' =>
                                             [
                                                 'colors.s' => [
-                                                    'gte' => ceil($value[1] - $value[1] * 0.1),
-                                                    'lte' => ceil($value[1] + $value[1] * 0.1)
+                                                    'gte' => ceil($value[1] - $value[1] * 0.6),
+                                                    'lte' => ceil($value[1] + $value[1] * 0.6)
                                                 ]
                                             ]
                                         ],
@@ -413,8 +416,8 @@ class IconController extends Controller
                                             'range' =>
                                             [
                                                 'colors.l' => [
-                                                    'gte' => ceil($value[2] - $value[2] * 0.1),
-                                                    'lte' => ceil($value[2] + $value[2] * 0.1)
+                                                    'gte' => ceil($value[2] - $value[2] * 0.4),
+                                                    'lte' => ceil($value[2] + $value[2] * 0.4)
                                                 ]
                                             ]
                                         ]

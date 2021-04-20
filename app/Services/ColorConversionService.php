@@ -36,7 +36,7 @@ class ColorConversionService {
             $h /= 6;
         }
 
-        return array(floor($h * 100), floor($s * 100), floor($l * 100));
+        return array(floor($h * 360), floor($s * 100), floor($l * 100));
     }
 
     public static function hslToHex($hsl) {
