@@ -1,11 +1,12 @@
 let selectedIcon;
 
 const editClicked = (icon) => {
+    console.log(icon)
     selectedIcon = icon;
     let name = document.getElementById("editName");
     name.value = icon.name;
     let style = document.getElementById("editStyle");
-    style.value = icon.style.name;
+    style.value = icon.style.value;
     let price = document.getElementById("editPrice");
     price.value = icon.price;
     let img_url = document.getElementById("editImage");
@@ -30,7 +31,7 @@ const detailsClicked = (icon) => {
     let name = document.getElementById("detailsName");
     name.innerText = `Name - ${icon.name}`
     let style = document.getElementById("detailsStyle");
-    style.innerText = `Style - ${icon.style.name}`;
+    style.innerText = `Style - ${icon.style.value}`;
     let price = document.getElementById("detailsPrice");
     price.innerText = `Price - ${icon.price}`;
     let img_url = document.getElementById("detailsImage");
@@ -62,7 +63,7 @@ const submitEdit = (event) => {
                 : selectedIcon.name,
         style:   style
                 ? style
-                : selectedIcon.style.name,
+                : selectedIcon.style.value,
         price:   price
                 ? price
                 : selectedIcon.price,

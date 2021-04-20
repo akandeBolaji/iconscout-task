@@ -16,9 +16,11 @@ class Color extends Model
      */
     protected $fillable = [
         'hex_value',
-        'hsl_value',
         'dec_value',
-        'name'
+        'name',
+        'saturation',
+        'hue',
+        'lightness'
     ];
 
     /**

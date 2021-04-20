@@ -15,12 +15,18 @@ class DropPkForPivotsTable extends Migration
     {
         Schema::table('icon_tag', function($table) {
            $table->dropColumn('id');
+           $table->dropColumn('created_at');
+           $table->dropColumn('updated_at');
         });
         Schema::table('color_icon', function($table) {
            $table->dropColumn('id');
+           $table->dropColumn('created_at');
+           $table->dropColumn('updated_at');
         });
         Schema::table('category_icon', function($table) {
            $table->dropColumn('id');
+           $table->dropColumn('created_at');
+           $table->dropColumn('updated_at');
         });
     }
 
@@ -33,12 +39,15 @@ class DropPkForPivotsTable extends Migration
     {
         Schema::table('icon_tag', function($table) {
            $table->bigInteger('id');
+           $table->timestamps();
         });
         Schema::table('color_icon', function($table) {
            $table->bigInteger('id');
+           $table->timestamps();
         });
         Schema::table('category_icon', function($table) {
            $table->bigInteger('id');
+           $table->timestamps();
         });
     }
 }

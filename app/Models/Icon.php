@@ -34,10 +34,11 @@ class Icon extends Model
         'name',
         'img_url',
         'price',
-        'contributor_id'
+        'contributor_id',
+        'style_id'
     ];
 
-    protected $with = ['categories', 'colors', 'tags', 'style'];
+    protected $with = ['categories', 'colors', 'tags'];
 
     /**
      * The attributes that should be hidden for arrays.

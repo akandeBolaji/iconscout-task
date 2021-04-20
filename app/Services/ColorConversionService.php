@@ -84,13 +84,12 @@ class ColorConversionService {
     public function generate_nested_colors($colors)
     {
         $result = [];
-        $values = $colors->pluck('hsl_value')->toArray();
-        foreach ($values as $value) {
-            $value = explode(",", $value);
+        foreach ($colors as $value) {
+            // $value = explode(",", $value);
             $result[] = [
-                "h" => (int)$value[0],
-                "s" => (int)$value[1],
-                "l" => (int)$value[2]
+                "h" => (int)$value->hue,
+                "s" => (int)$value->saturation,
+                "l" => (int)$value->lightness
             ];
         }
         return $result;

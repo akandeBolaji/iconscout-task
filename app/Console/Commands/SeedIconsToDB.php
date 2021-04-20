@@ -77,7 +77,7 @@ class SeedIconsToDB extends Command
                 "img_url" => $arr["image"],
                 "price" => $arr["price"],
                 "contributor_id" => $contributor->id,
-                "style_id" => $style_id
+                "style_id" => $style->id
             ]);
 
             $tags = array_keys($arr["tags"]);
@@ -99,11 +99,19 @@ class SeedIconsToDB extends Command
             }));
             foreach ($colors as $c) {
                 $c =  substr($c, 1);
+                $hsl = ColorConversionService::hexToHsl($c);
                 $color = Color::where('hex_value', $c)
-                        ->firstOrCreate(
-                            ['hex_value' => $c],
-                            ['hsl_value' => implode(",", ColorConversionService::hexToHsl($c))]
-                        );
+                        ->first();
+                if (!$color) {
+                    Color::Create([
+                        'hex_value' => $c,
+                        'hue' => $hsl[0],
+                        'saturation' => $hsl[1],
+                        'hue' => $hsl[0],
+                        'lightness' => $hsl[2]
+                    ]);
+                }
+
                 $icon->colors()->attach($color);
             }
             $i++;

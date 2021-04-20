@@ -15,9 +15,9 @@ class ChangesToColorsTable extends Migration
     {
         Schema::table('colors', function (Blueprint $table) {
             $table->dropColumn('hsl_value');
-            $table->string('hue')->nullable();
-            $table->string('saturation')->nullable();
-            $table->string('lightness')->nullable();
+            $table->integer('hue')->after('hex_value')->nullable();
+            $table->integer('saturation')->after('hue')->nullable();
+            $table->integer('lightness')->after('saturation')->nullable();
         });
     }
 

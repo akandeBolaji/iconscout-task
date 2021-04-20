@@ -11,7 +11,8 @@ use App\Models\{
     Icon,
     Tag,
     Category,
-    Color
+    Color,
+    Style
 };
 use Illuminate\Database\Eloquent\Factories\Sequence;
 
@@ -72,14 +73,24 @@ class DatabaseSeeder extends Seeder
             ->has(Color::factory()
                 ->count(2)
                 ->state(new Sequence(
-                    ['hex_value' => '85C88D', 'hsl_value' => '127,37,65'],
-                    ['hex_value' => 'FFFFFF', 'hsl_value' => '0,0,100'],
+                    [
+                        'hex_value' => '85C88D',
+                        'hue' => 127,
+                        'saturation' => 37,
+                        'lightness' => 65
+                    ],
+                    [
+                        'hex_value' => 'FFFFFF',
+                        'hue' => 0,
+                        'saturation' => 0,
+                        'lightness' => 100
+                    ]
                 ))
             )
             ->create([
                 'name' => "Airplane",
                 'img_url' => "https://iconscout.com",
-                'style' => "flat",
+                'style_id' => Style::factory()->create(['value' => 'flat']),
                 'price' => 5.99,
                 'contributor_id' => $team_member->make()->user->id
             ]);

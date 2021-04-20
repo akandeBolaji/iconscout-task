@@ -13,7 +13,7 @@ class ModifyStyleOnIconsTable extends Migration
      */
     public function up()
     {
-         Schema::table('users', function (Blueprint $table) {
+         Schema::table('icons', function (Blueprint $table) {
             $table->dropColumn('style');
             $table->bigInteger('style_id')->nullable();
         });
@@ -26,7 +26,9 @@ class ModifyStyleOnIconsTable extends Migration
      */
     public function down()
     {
-        $table->string('style')->nullable();
-        $table->dropColumn('style_id');
+        Schema::table('icons', function (Blueprint $table) {
+            $table->string('style')->nullable();
+            $table->dropColumn('style_id');
+        });
     }
 }
