@@ -83,9 +83,12 @@ class IconController extends Controller
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage =  $request['per_page'] ?? 20;
 
+        $iconIdsOrdered = implode(',', $iconArrayIds);
+
         // Retrieve found icons from database (TODO Optimize)
         $icons = Icon::with('tags', 'categories', 'colors')
                 ->whereIn('id', $iconArrayIds)
+                ->orderByRaw("FIELD(id, $iconIdsOrdered)")
                 ->get();
 
         $paginate_icons = new LengthAwarePaginator($icons, $data['hits']['total']['value'], $perPage, $currentPage);
