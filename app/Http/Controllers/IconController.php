@@ -83,13 +83,19 @@ class IconController extends Controller
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage =  $request['per_page'] ?? 20;
 
-        $iconIdsOrdered = implode(',', $iconArrayIds);
+        $icons = [];
 
-        // Retrieve found icons from database (TODO Optimize)
-        $icons = Icon::with('tags', 'categories', 'colors')
-                ->whereIn('id', $iconArrayIds)
-                ->orderByRaw("FIELD(id, $iconIdsOrdered)")
-                ->get();
+        if ($data['hits']['total']['value'] > 0) {
+             $iconIdsOrdered = implode(',', $iconArrayIds);
+
+            // Retrieve found icons from database (TODO Optimize)
+            $icons = Icon::with('tags', 'categories', 'colors')
+                    ->whereIn('id', $iconArrayIds)
+                    ->orderByRaw("FIELD(id, $iconIdsOrdered)")
+                    ->get();
+        }
+
+
 
         $paginate_icons = new LengthAwarePaginator($icons, $data['hits']['total']['value'], $perPage, $currentPage);
 
@@ -401,8 +407,8 @@ class IconController extends Controller
                                             'range' =>
                                             [
                                                 'colors.h' => [
-                                                    'gte' => ceil($value[0] - $value[0] * 0.1),
-                                                    'lte' => ceil($value[0] + $value[0] * 0.1)
+                                                    'gte' => ceil($value[0] - $value[0] * 0.2),
+                                                    'lte' => ceil($value[0] + $value[0] * 0.2)
                                                 ]
                                             ]
                                         ],
@@ -410,8 +416,8 @@ class IconController extends Controller
                                             'range' =>
                                             [
                                                 'colors.s' => [
-                                                    'gte' => ceil($value[1] - $value[1] * 0.6),
-                                                    'lte' => ceil($value[1] + $value[1] * 0.6)
+                                                    'gte' => ceil($value[1] - $value[1] * 0.5),
+                                                    'lte' => ceil($value[1] + $value[1] * 0.5)
                                                 ]
                                             ]
                                         ],
@@ -419,8 +425,8 @@ class IconController extends Controller
                                             'range' =>
                                             [
                                                 'colors.l' => [
-                                                    'gte' => ceil($value[2] - $value[2] * 0.4),
-                                                    'lte' => ceil($value[2] + $value[2] * 0.4)
+                                                    'gte' => ceil($value[2] - $value[2] * 0.5),
+                                                    'lte' => ceil($value[2] + $value[2] * 0.5)
                                                 ]
                                             ]
                                         ]
