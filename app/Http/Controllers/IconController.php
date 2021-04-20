@@ -9,7 +9,8 @@ use App\Models\{
     Icon,
     Tag,
     Color,
-    Category
+    Category,
+    Style
 };
 use App\Events\{
     NewIconEvent,
@@ -89,13 +90,11 @@ class IconController extends Controller
              $iconIdsOrdered = implode(',', $iconArrayIds);
 
             // Retrieve found icons from database (TODO Optimize)
-            $icons = Icon::with('tags', 'categories', 'colors')
+            $icons = Icon::with('tags', 'categories', 'colors', 'style')
                     ->whereIn('id', $iconArrayIds)
                     ->orderByRaw("FIELD(id, $iconIdsOrdered)")
                     ->get();
         }
-
-
 
         $paginate_icons = new LengthAwarePaginator($icons, $data['hits']['total']['value'], $perPage, $currentPage);
 
@@ -128,12 +127,14 @@ class IconController extends Controller
         DB::beginTransaction();
         try {
             $contributor = Auth::user();
+            $style = Style::where('value', $validatedData["style"])
+                        ->firstOrCreate(["value" => $validatedData["style"]]);
 
             $icon = Icon::create([
                 "name" => $validatedData["name"],
                 "img_url" => $validatedData["img_url"],
                 "price" => $validatedData["price"],
-                "style" => $validatedData["style"],
+                "style_id" => $style->id,
                 "contributor_id" => $contributor->id,
             ]);
 
@@ -190,12 +191,15 @@ class IconController extends Controller
             $contributor = Auth::user();
             $icon = Icon::find($id);
 
+            $style = Style::where('value', $validatedData["style"])
+                        ->firstOrCreate(["value" => $validatedData["style"]]);
+
             $icon->update([
                 "name" => $validatedData["name"],
                 "img_url" => $validatedData["img_url"],
                 "price" => $validatedData["price"],
-                "style" => $validatedData["style"],
                 "contributor_id" => $contributor->id,
+                "style_id" => $style->id,
             ]);
 
             //temporary implementation

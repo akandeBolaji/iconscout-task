@@ -158,7 +158,7 @@ class ImportToElasticSearch extends Command
                 'id'                => $icon->id,
                 'name'              => $icon->name,
                 'contributor'       => $icon->contributor->name,
-                'style'             => $icon->style,
+                'style'             => $icon->style->name,
                 'price'             => $icon->price,
                 'tags'              => implode(',', $icon->tags->pluck('value')->toArray()),
                 'colors'            => (new ColorConversionService)->generate_nested_colors($icon->colors),

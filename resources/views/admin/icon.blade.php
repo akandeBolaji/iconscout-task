@@ -39,7 +39,7 @@ $config = [
         return [
             $icon->id,
             $icon->name,
-            $icon->style,
+            $icon->style->name,
             $icon->price,
             $icon->img_url,
             '<nobr>'.btnEdit($icon).btnDelete($icon).btnDetails($icon).'</nobr>'

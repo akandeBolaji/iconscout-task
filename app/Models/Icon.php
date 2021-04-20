@@ -34,11 +34,10 @@ class Icon extends Model
         'name',
         'img_url',
         'price',
-        'style',
         'contributor_id'
     ];
 
-    protected $with = ['categories', 'colors', 'tags'];
+    protected $with = ['categories', 'colors', 'tags', 'style'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -84,5 +83,13 @@ class Icon extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    /**
+     * The style that belong to the icon.
+     */
+    public function style()
+    {
+        return $this->belongsTo(Style::class);
     }
 }

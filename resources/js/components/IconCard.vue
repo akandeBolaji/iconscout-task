@@ -21,7 +21,9 @@
       <p class="text-base text-gray-700 truncate">
         Price - {{ icon.price == 0 ? "Free" : `$${icon.price}` }}
       </p>
-      <p class="text-base text-gray-700 truncate">Style - {{ icon.style }}</p>
+      <p class="text-base text-gray-700 truncate">
+        Style - {{ icon.style.name }}
+      </p>
       <p class="text-base text-gray-700 truncate">
         Tags -
         <span v-for="tag in icon.tags" :key="tag.id">{{ tag.value }},</span>

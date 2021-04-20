@@ -9,7 +9,8 @@ use App\Models\{
     Icon,
     Tag,
     Color,
-    Category
+    Category,
+    Style
 };
 use App\Services\ColorConversionService;
 
@@ -68,13 +69,15 @@ class SeedIconsToDB extends Command
         foreach ($data as $arr) {
             $contributor = User::where('name', $arr["contributor"])
                             ->firstOrCreate(["name" => $arr["contributor"]]);
+             $style = Style::where('value', $arr["style"])
+                        ->firstOrCreate(["value" => $arr["style"]]);
 
             $icon = Icon::create([
                 "name" => $arr["name"],
                 "img_url" => $arr["image"],
                 "price" => $arr["price"],
-                "style" => $arr["style"],
                 "contributor_id" => $contributor->id,
+                "style_id" => $style_id
             ]);
 
             $tags = array_keys($arr["tags"]);
@@ -98,7 +101,7 @@ class SeedIconsToDB extends Command
                 $c =  substr($c, 1);
                 $color = Color::where('hex_value', $c)
                         ->firstOrCreate(
-                            ['hex_value' => $c], 
+                            ['hex_value' => $c],
                             ['hsl_value' => implode(",", ColorConversionService::hexToHsl($c))]
                         );
                 $icon->colors()->attach($color);
