@@ -32,18 +32,24 @@ export default {
   },
   methods: {
     changeFilter(data) {
+      console.log(data);
       this.style = data.style;
       this.cost = data.cost;
+      this.color = data.color;
+      this.color_type = data.color_type;
       this.searchIcon();
     },
     searchIcon() {
       if (!this.query) {
         return;
       }
+
       let req = {
         query: this.query,
         cost: this.cost,
         style: this.style,
+        color: this.color,
+        color_type: this.color_type,
       };
       clearTimeout(this.debounce);
       this.debounce = setTimeout(() => {

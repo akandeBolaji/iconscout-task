@@ -50,6 +50,15 @@
         </svg>
       </div>
     </div>
+    <div class="m-2 w-30">
+      <input
+        type="text"
+        class="w-full h-10"
+        @change="changeFilter"
+        v-model="filter.color"
+        placeholder="Enter Color"
+      />
+    </div>
   </div>
 </template>
 <script>
@@ -59,6 +68,8 @@ export default {
       filter: {
         cost: "",
         style: "",
+        color: "#FFF000",
+        color_type: "hex",
       },
     };
   },

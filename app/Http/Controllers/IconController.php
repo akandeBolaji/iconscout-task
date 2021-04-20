@@ -64,6 +64,8 @@ class IconController extends Controller
         // Search for given text and return data
         $data = $this->search_icons($request->all());
 
+        \Log::debug($data);
+
         $iconArrayIds = [];
         $style_agg = [];
 
@@ -267,7 +269,7 @@ class IconController extends Controller
                 ],
                 'query' => [
                     'bool' => [
-                        'must' => [
+                        'should' => [
                             ['match' => [
                                 "name" => [
                                     'query'  => $input['query'],
